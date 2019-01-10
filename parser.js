@@ -12,9 +12,9 @@ function parse(textData) {
 	pos = 0;
 	currentNode = null;
 	root = null;
-	
+
 	data = textData;
-	
+
 	// If this is a CCG tree keep only the categories and words
 	if (data.match(/<T\s+(.*?)\s+[0-9]+\s+[0-9]+>/)) {
 		// Replace any category-internal ()'s with [] to avoid confusing the parser
@@ -26,14 +26,14 @@ function parse(textData) {
 		    return b.replace(/\[/g,"{").replace(/\]/g,"}").replace(/\(/g,"[").replace(/\)/g,"]") + ' ' + e;
 		});
 	}
-	
+
 	// Clean up
 	data = data.replace(/\s+/g, " ");
 	data = data.replace(/\)\s+\(/g, ")(");
 	data = data.replace(/\(\s+\(/g, "((");
-	// Not sure why I have to do this twice... apparently 
+	// Not sure why I have to do this twice... apparently
 	data = data.replace(/\)\s+\)/g, "))").replace(/\)\s+\)/g, "))");
-	
+
 	// Parse the string
 	makeTree();
 	root = currentNode;
@@ -45,24 +45,24 @@ function makeTree() {
     var token = getNextToken().trim();
 	// console.log("First token: " + token);
 	var parts = [2];
-	
+
     while( token != "" && token != ")" ) {
         switch(token.charAt(0)) {
 		case "(":
             token = token.substr(1, token.length - 1);
             var spaceAt = token.indexOf(" ");
 			var childNode;
-			
+
             if (spaceAt != -1) {
                 parts[0] = token.substr(0, spaceAt);
                 parts[1] = token.substr(spaceAt, token.length - spaceAt);
                 childNode = new TreeNode(parts[0]);
 				childNode.addChild(new TreeNode(parts[1]));
-            } 
+            }
 			else {
                 childNode = new TreeNode(token);
             }
-			
+
 			if (currentNode) {
 				// console.log("Current node: " + currentNode.toJSON());
 				// console.log("Adding child" + childNode.toJSON());
@@ -124,25 +124,27 @@ function getNextToken() {
 
 function TreeNode(label) {
 	this.parent;
-	this.name = label;
+	this.name = label.split(":")[0];
 	this.children = [];
-	
+	this.activation = label.split(":")[1];
+
 	this.addChild = function(child) {
 		child.parent = this;
 		this.children[this.children.length] = child;
 	}
-	
+
 	this.getParent = function() {
 		return this.parent;
 	}
-	
+
 	this.getChild = function(index) {
 		return this.children[index];
 	}
-	
+
 	this.toJSON = function() {
 		label = label.replace(/\[/g,"(").replace(/\]/g,")").replace(/{/g,"[").replace(/}/g,"]");
-		var text = "{\"name\":" + "\"" + label + "\"";
+		var text = "{\"name\":" + "\"" + this.name + "\"";
+		text += ",\"activation\":" + "\"" + this.activation + "\"";
 		if (this.children.length != 0) {
 			text += ",\"children\":[";
 			for	(var index = 0; index < this.children.length; ++index) {

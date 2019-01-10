@@ -5,18 +5,19 @@
 .overlay {
 	background-color: #eed;
 }
-   
+
 .node rect {
 	fill: #fff;
-	stroke: darkorange;
+	stroke: #ccc;
 	stroke-width: 1.5px;
 }
-   
+
 .node text {
 	font-size: 10px;
 	font-family: serif;
+	color: white;
 }
-   
+
 .link {
 	fill: none;
 	stroke: #ccc;

@@ -1,5 +1,8 @@
-tree-viewer
+tree-activations-viewer
 ===========
 
-A collapsable/zoomable syntax tree viewer based on [d3.js](http://d3js.org/).
-For a live demo visit [here](http://christos-c.com/treeviewer/)
+A visualization tool based on [d3.js](http://d3js.org/) that allow you to visualize DTK tree activations:
+
+```
+(S:0.5 (NP:0.6 this pippo) (VP:0.1 (V:0.2 is) (AdjP:0.3 pretty)))
+```

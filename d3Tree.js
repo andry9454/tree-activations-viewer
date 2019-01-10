@@ -1,6 +1,9 @@
 // Inspired by "D3.js Drag and Drop Zoomable Tree" by Rob Schmuecker <robert.schmuecker@gmail.com>
 // https://gist.github.com/robschmuecker/7880033
 
+//function that given a number between 0 and 1, return the corresponding color
+actToColor = chroma.scale(['black', 'grey', 'red', 'orange', 'yellow']);
+
 function d3Tree(treeData) {
     // panning variables
     var panSpeed = 200;
@@ -8,11 +11,11 @@ function d3Tree(treeData) {
     var i = 0;
     var duration = 450;
     var root;
-	
+
     // size of the diagram
 	var pageWidth = $(document).width();
-    var viewerWidth = pageWidth - (0.2 * pageWidth);
-    var viewerHeight = 500;
+    var viewerWidth = pageWidth - (0.05 * pageWidth);
+    var viewerHeight = 600;
 
     var tree = d3.layout.tree()
         .size([viewerWidth-20, viewerHeight]);
@@ -22,7 +25,7 @@ function d3Tree(treeData) {
         .projection(function(d) {
             return [d.x, d.y];
         });
-		
+
 	// Can be used to draw the links between nodes instead of the diagonal
 	// TODO Doesn't work with the collapse/expand transition
 	//function straightLine(d) {
@@ -78,10 +81,10 @@ function d3Tree(treeData) {
 
     // define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
     var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
-	
+
 	// remove the previous svg if there
 	d3.select("svg").remove();
-	
+
     // define the baseSvg, attaching a class for styling and the zoomListener
     var baseSvg = d3.select("#tree-container").append("svg")
         .attr("width", viewerWidth)
@@ -196,9 +199,10 @@ function d3Tree(treeData) {
 			.attr("y", -10)
 			.attr("width", 0)
 			.attr("height", 0)
-			.style("fill", function(d) {
+      .style("fill", "#4286f4")
+			/*.style("fill", function(d) {
 			    return d._children ? "lightsteelblue" : "#fff";
-		});
+		}) */;
 
         nodeEnter.append("text")
             .attr("y", 0)
@@ -208,7 +212,8 @@ function d3Tree(treeData) {
             .text(function(d) {
                 return d.name;
             })
-            .style("fill-opacity", 0);
+            .style("fill-opacity", 0)
+            .style("color", "white");
 
         // Update the text to reflect whether node has children or not.
         node.select('text')
@@ -216,7 +221,8 @@ function d3Tree(treeData) {
             .attr("text-anchor", "middle")
             .text(function(d) {
                 return d.name;
-            });
+            })
+            .style("color", "white");
 
         node.select("rect.nodeRect")
             .attr("width", function(d) {
@@ -227,7 +233,7 @@ function d3Tree(treeData) {
                 return d.children || d._children ? 20 : 0;
             })
             .style("fill", function(d) {
-                return d._children ? "lightsteelblue" : "#fff";
+                return actToColor(d.activation).css();
             });
 
         // Transition nodes to their new position.
@@ -300,6 +306,48 @@ function d3Tree(treeData) {
 
     // Append a group which holds all nodes and which the zoom Listener can act upon.
     var svgGroup = baseSvg.append("g");
+
+    //LEGEND PART =====================================================================
+
+    // add legend rect gray
+    baseSvg.append("rect")
+      .attr("class", "legend")
+      .attr("x", 10)
+      .attr("y", 10)
+      .attr("rx", "5px")
+      .attr("width", 230)
+      .attr("height", 90)
+      .attr("stroke", "darkgray")
+      .attr("fill", "#ddddcc");
+
+    /*
+    baseSvg.select("legend").append("text")
+      .attr("class", "legend_text")
+      .attr("x", 290)
+      .attr("y", 20)
+      .attr("dy", "0.32em")
+      .style("font-weight", "bold")
+      .text("Prova");
+      */
+
+      data = [{}
+      ]
+
+    var legend_text = baseSvg.selectAll("legend_text")
+      .data(data)
+      .enter();
+
+    legend_text.append("text")
+      .attr("class", "legend_text")
+      .attr("x", 95)
+      .attr("y", 20)
+      .attr("dy", "0.32em")
+      .style("font-weight", "bold")
+      .text("Legend");
+
+
+
+
 
     // Define the root
     root = treeData;
