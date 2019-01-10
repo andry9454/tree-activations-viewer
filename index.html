@@ -21,8 +21,8 @@ function onSub() {
 	sentenceString = getYield(jsonData, sentenceString);
 	// Add the sentence (yield of the JSON tree) to the sentence container
 	document.getElementById("sentence-container").innerHTML = "<p>"+sentenceString+"</p>";
-	d3Tree(jsonData);
-	d3Tree(jsonData);
+	d3Tree(jsonData, "#tree-container");
+	//d3Tree(jsonData, "#tree-container-1");
 	return false;
 }
 
@@ -75,6 +75,7 @@ window.onload = function() {
 	</div>
 	<div style="text-align: center;">
     <div id="tree-container"></div>
+		<div id="tree-container-1"></div>
 	<div id="sentence-container"></div>
 	<div id="input-text">
 		<!--Initialise the default text with grey -->

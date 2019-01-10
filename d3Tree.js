@@ -4,7 +4,7 @@
 //function that given a number between 0 and 1, return the corresponding color
 actToColor = chroma.scale(['black', 'grey', 'red', 'orange', 'yellow']);
 
-function d3Tree(treeData) {
+function d3Tree(treeData, divContainer) {
     // panning variables
     var panSpeed = 200;
     // Misc. variables
@@ -83,10 +83,10 @@ function d3Tree(treeData) {
     var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
 
 	// remove the previous svg if there
-	d3.select("svg").remove();
+	//d3.select("svg").remove();
 
     // define the baseSvg, attaching a class for styling and the zoomListener
-    var baseSvg = d3.select("#tree-container").append("svg")
+    var baseSvg = d3.select(divContainer).append("svg")
         .attr("width", viewerWidth)
         .attr("height", viewerHeight)
         .attr("class", "overlay")
